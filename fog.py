@@ -3,7 +3,7 @@ import threading
 import paho.mqtt.client as mqtt
 import json
 import os
-
+import pandas
 
 global mqttc,serv_topic,fog_topic
 serv_topic='server' #server topic to communicate with server
@@ -13,13 +13,14 @@ fog_topic='fog'  # fog topic to communicate with fog
 def on_connect(mosq, obj, rc):
     global mqttc
     mqttc.subscribe((fog_topic,0)) #subscribe to fog topic
-
+    print('subscribed')
 
 
 def on_message(mosq, obj, msg):
     msg=msg.payload.decode('utf-8')
     msg=json.loads(msg)
     print(msg)
+    print('message')
     f=open('config/'+msg['app_name']+'.txt','w') #saves configuration in conf folder
     f.write(json.dumps(msg))
     f.close()
@@ -31,7 +32,7 @@ def on_message(mosq, obj, msg):
 def pub(msg):
     global mqttc,serv_topic
     mqttc.publish(serv_topic,msg.encode('utf-8'))
-
+    print('messages')
 
 
 
